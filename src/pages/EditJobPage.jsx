@@ -1,23 +1,25 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const AddJobPage = ({ addJobSubmit }) => {
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [salary, setSalary] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [companyDescription, setCompanyDescription] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-
+const EditJobPage = ({ updateJobSubmit }) => {
+  const job = useLoaderData();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [title, setTitle] = useState(job.title);
+  const [type, setType] = useState(job.type);
+  const [location, setLocation] = useState(job.location);
+  const [description, setDescription] = useState(job.description);
+  const [salary, setSalary] = useState(job.salary);
+  const [companyName, setCompanyName] = useState(job.company.name);
+  const [companyDescription, setCompanyDescription] = useState(job.company.description);
+  const [contactEmail, setContactEmail] = useState(job.company.contactEmail);
+  const [contactPhone, setContactPhone] = useState(job.company.contactPhone);
 
   const submitForm = (e) => {
     e.preventDefault();
-    const newJob = {
+    const jobData = {
+      id,
       title,
       type,
       location,
@@ -30,17 +32,16 @@ const AddJobPage = ({ addJobSubmit }) => {
         contactPhone: contactPhone,
       },
     };
-    addJobSubmit(newJob);
-    toast.success("Job added succesfully");
-    return navigate("/jobs");
+    updateJobSubmit(jobData);
+    toast.success("Job updated succesfully");
+    return navigate(`/job/${id}`);
   };
-
   return (
     <section className="bg-blue-50">
       <div className="container m-auto max-w-2xl py-24 text-[13px]">
         <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
           <form onSubmit={submitForm}>
-            <h2 className="text-xl text-center font-semibold mb-6">Add Job</h2>
+            <h2 className="text-xl text-center font-semibold mb-6">Update Job</h2>
 
             <div className="mb-4">
               <label htmlFor="type" className="block text-gray-700 font-bold mb-2">
@@ -198,12 +199,11 @@ const AddJobPage = ({ addJobSubmit }) => {
                 className="bg-emerald-500 hover:bg-emerald-600 text-white  py-2 px-4 rounded-md w-full focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Add Job
+                Update Job
               </button>
               <Link
                 to="/"
                 className="bg-red-500 hover:bg-red-700 text-white  py-2 px-4 rounded-md w-fullfocus:outline-none focus:shadow-outline block text-center"
-                type="submit"
               >
                 Cancel
               </Link>
@@ -215,4 +215,4 @@ const AddJobPage = ({ addJobSubmit }) => {
   );
 };
 
-export default AddJobPage;
+export default EditJobPage;

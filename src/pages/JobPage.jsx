@@ -1,8 +1,20 @@
-import { useLoaderData, Link } from "react-router-dom";
+import { useLoaderData, Link, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
+import { toast } from "react-toastify";
 
-const JobPage = () => {
+const JobPage = ({ deleteJob, updateJob }) => {
   const job = useLoaderData();
+  const navigate = useNavigate();
+  const onDeleteJob = (id) => {
+    const confirm = window.confirm("Are you sure you want to delete this listing?");
+    if (!confirm) {
+      return;
+    }
+    deleteJob(id);
+    toast.success("Job deleted successfully!");
+    navigate("/jobs");
+    return;
+  };
   console.log(job);
   return (
     <>
@@ -72,13 +84,16 @@ const JobPage = () => {
               <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <h3 className="text-lg font-bold mb-6">Manage Job</h3>
                 <Link
-                  to={`/jobs/edit/${job.id}`}
+                  to={`/edit-job/${job.id}`}
                   className="bg-blue-500 hover:bg-emerald-600 text-white text-center py-2 px-4 rounded-md w-full focus:outline-none focus:shadow-outline mt-4 block"
                 >
                   Edit Job
                 </Link>
 
-                <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md w-full focus:outline-none focus:shadow-outline mt-4 block">
+                <button
+                  onClick={() => onDeleteJob(job.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md w-full focus:outline-none focus:shadow-outline mt-4 block"
+                >
                   Delete Job
                 </button>
               </div>
